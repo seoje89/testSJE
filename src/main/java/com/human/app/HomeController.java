@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Handles requests for the application home page.
@@ -48,20 +50,33 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/info", method=RequestMethod.GET)
-	public String doInfo(HttpServletRequest hsr, Model model) {
-		String uid=hsr.getParameter("userid");
-		String addr=hsr.getParameter("address");
-		model.addAttribute("loginid", uid);
-		model.addAttribute("region", addr);
-		//userid -> uid -> loginid, adress -> addr -> region
+//	public String doInfo(HttpServletRequest hsr, Model model) {
+//		String uid=hsr.getParameter("userid");
+//		String addr=hsr.getParameter("address");
+//		String n=hsr.getParameter("income");
+//		int salary = Integer.parseInt(n)
+//		model.addAttribute("loginid", uid);
+//		model.addAttribute("region", addr);
+//		model.addAttribute("salary", salary);
+//		//userid -> uid -> loginid, adress -> addr -> region
+//		return "viewinfo";
+//	public String doInfo(Model model, @RequestParam("userid") String uid, @RequestParam("address") String addr) {
+//		model.addAttribute("loginid", uid);
+//		model.addAttribute("region", addr);
+//		return "viewinfo";
+		
+	public String doInfo(Model model, ParamList pl) {
+		model.addAttribute("loginid", pl.userid);
+		model.addAttribute("region", pl.address);
 		return "viewinfo";
 	}
+
 	@RequestMapping(value="/getinfo", method=RequestMethod.GET)
 	public String getInfo() {
-		
-		
+				
 		return "getinfo";
 	}
+	
 	@RequestMapping(value="/viewinfo")
 	public String viewInfo() {
 		
@@ -72,6 +87,7 @@ public class HomeController {
 	public String doChoose() {
 		return "choose";
 	}
+	
 	@RequestMapping(value="/selected")
 	public String doJob(HttpServletRequest hsr, Model model) {
 		String strPath=hsr.getParameter("path");
@@ -82,5 +98,11 @@ public class HomeController {
 		} else {
 			return "choose";
 		}
+	}
+	@RequestMapping("/today/{address}/{userid}")
+	public String showNumber(@PathVariable String userid, @PathVariable String address, Model model) {
+		model.addAttribute("addr", address);
+		model.addAttribute("uid", userid);
+		return "today";
 	}
 }
